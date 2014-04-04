@@ -3,74 +3,53 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.baxter</groupId>
-        <artifactId>parent</artifactId>
-        <version>1.2.2</version>
+        <groupId>com.baxter.log</groupId>
+        <artifactId>baxter-log-connector</artifactId>
+        <version>1.0.2-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.baxter.log</groupId>
-    <artifactId>baxter-log-connector</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
-    <packaging>pom</packaging>
-    <name>Baxter Log Connector</name>
+    <artifactId>baxter-log4j-connector</artifactId>
+    <name>Baxter Log4J Connector</name>
 
-    <inceptionYear>2013</inceptionYear>
+    <dependencyManagement>
 
-    <url>https://repository-baxter.forge.cloudbees.com/private/sites/log-connector/</url>
+        <dependencies>
 
-    <scm>
-        <connection>scm:git:ssh://git@git.cloudbees.com/baxter/baxter-log-connector.git</connection>
-        <developerConnection>scm:git:ssh://git@git.cloudbees.com/baxter/baxter-log-connector.git</developerConnection>
-        <url>ssh://git@git.cloudbees.com/baxter/baxter-log-connector.git</url>
-      <tag>HEAD</tag>
-  </scm>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>baxter-log-connector-bom</artifactId>
+                <type>pom</type>
+                <version>${project.version}</version>
+                <scope>import</scope>
+            </dependency>
 
-    <build>
+        </dependencies>
 
-        <pluginManagement>
+    </dependencyManagement>
 
-            <plugins>
+    <dependencies>
 
-                <plugin>
-                    <artifactId>maven-jar-plugin</artifactId>
-                    <configuration>
-                        <archive>
-                            <addMavenDescriptor>true</addMavenDescriptor>
-                            <manifest>
-                                <addClasspath>true</addClasspath>
-                            </manifest>
-                        </archive>
-                    </configuration>
-                </plugin>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <scope>runtime</scope>
+        </dependency>
 
-            </plugins>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <scope>runtime</scope>
+        </dependency>
 
-        </pluginManagement>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <scope>runtime</scope>
+        </dependency>
 
-    </build>
+    </dependencies>
 
     <profiles>
-
-        <profile>
-            <id>Distribution-CloudBees</id>
-            <distributionManagement>
-                <site>
-                    <id>cloudbees-private-repository</id>
-                    <name>Baxter Configuration Site</name>
-                    <url>dav:https://repository-baxter.forge.cloudbees.com/private/sites/log-connector/</url>
-                </site>
-            </distributionManagement>
-        </profile>
-
-        <profile>
-            <id>Distribution-Baxter</id>
-            <distributionManagement>
-                <site>
-                    <id>qa-apache</id>
-                    <url>scp://qa.baxtersol.bit/var/www/products/log-connector/</url>
-                </site>
-            </distributionManagement>
-        </profile>
 
         <profile>
             <id>TARGZ</id>
@@ -80,27 +59,11 @@
                 </property>
             </activation>
             <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <artifactId>maven-assembly-plugin</artifactId>
-                            <executions>
-                                <execution>
-                                    <id>build-standalone</id>
-                                    <phase>package</phase>
-                                    <goals>
-                                        <goal>single</goal>
-                                    </goals>
-                                    <configuration>
-                                        <descriptors>
-                                            <descriptor>src/main/assembly/standalone.xml</descriptor>
-                                        </descriptors>
-                                    </configuration>
-                                </execution>
-                            </executions>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                    </plugin>
+                </plugins>
             </build>
         </profile>
 
@@ -112,29 +75,37 @@
                 </os>
             </activation>
             <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>no.arktekk.unix</groupId>
-                            <artifactId>unix-maven-plugin</artifactId>
-                            <configuration>
-                                <deb combine.children="append">
-                                    <provides>${unix.package},${connector-type}</provides>
-                                </deb>
-                                <assembly combine.children="append">
-                                    <copyFile>
-                                        <path>${project.build.directory}/${project.build.finalName}.jar</path>
-                                        <toDir>${unix.application.lib.dir}</toDir>
-                                    </copyFile>
-                                    <symlink>
-                                        <path>${unix.application.lib.dir}/${connector-jar}</path>
-                                        <value>${unix.application.lib.dir}/${project.build.finalName}.jar</value>
-                                    </symlink>
-                                </assembly>
-                            </configuration>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
+
+                <plugins>
+
+                    <plugin>
+                        <artifactId>unix-maven-plugin</artifactId>
+                        <groupId>no.arktekk.unix</groupId>
+                        <executions>
+                            <execution>
+                                <id>build-deb-installer</id>
+                                <configuration>
+                                    <assembly combine.children="append">
+                                        <copyArtifact>
+                                            <artifact>org.slf4j:slf4j-api</artifact>
+                                            <toDir>${unix.application.lib.dir}</toDir>
+                                        </copyArtifact>
+                                        <copyArtifact>
+                                            <artifact>org.slf4j:slf4j-log4j12</artifact>
+                                            <toDir>${unix.application.lib.dir}</toDir>
+                                        </copyArtifact>
+                                        <copyArtifact>
+                                            <artifact>log4j:log4j</artifact>
+                                            <toDir>${unix.application.lib.dir}</toDir>
+                                        </copyArtifact>
+                                    </assembly>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                </plugins>
+
             </build>
         </profile>
 
@@ -146,92 +117,15 @@
                 </os>
             </activation>
             <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>org.codehaus.mojo</groupId>
-                            <artifactId>rpm-maven-plugin</artifactId>
-                            <configuration>
-                                <provides combine.children="append">
-                                    <provide>${connector-type}</provide>
-                                </provides>
-                            </configuration>
-                            <executions>
-                                <execution>
-                                    <id>build-std-rpm-installer</id>
-                                    <configuration>
-                                        <mappings combine.children="append">
-                                            <mapping>
-                                                <directory>${unix.application.lib.dir}</directory>
-                                            </mapping>
-                                            <mapping>
-                                                <directory>${unix.application.lib.dir}</directory>
-                                                <artifact>
-                                                    <classifiers>
-                                                        <classifier />
-                                                    </classifiers>
-                                                </artifact>
-                                                <dependency>
-                                                </dependency>
-                                                <sources>
-                                                    <softlinkSource>
-                                                        <location>${unix.application.lib.dir}/${project.build.finalName}.jar</location>
-                                                        <destination>${connector-jar}</destination>
-                                                    </softlinkSource>
-                                                </sources>
-                                            </mapping>
-                                        </mappings>
-                                    </configuration>
-                                </execution>
-                                <execution>
-                                    <id>build-alt-rpm-installer</id>
-                                    <configuration>
-                                        <mappings combine.children="append">
-                                            <mapping>
-                                                <directory>${unix.application.alt.root}</directory>
-                                            </mapping>
-                                            <mapping>
-                                                <directory>${unix.application.alt.lib.dir}</directory>
-                                            </mapping>
-                                            <mapping>
-                                                <directory>${unix.application.alt.lib.dir}</directory>
-                                                <artifact>
-                                                    <classifiers>
-                                                        <classifier />
-                                                    </classifiers>
-                                                </artifact>
-                                                <dependency>
-                                                </dependency>
-                                                <sources>
-                                                    <softlinkSource>
-                                                        <location>${unix.application.alt.lib.dir}/${project.build.finalName}.jar</location>
-                                                        <destination>${connector-jar}</destination>
-                                                    </softlinkSource>
-                                                </sources>
-                                            </mapping>
-                                        </mappings>
-                                    </configuration>
-                                </execution>
-                            </executions>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>rpm-maven-plugin</artifactId>
+                    </plugin>
+                </plugins>
             </build>
         </profile>
 
     </profiles>
-
-    <modules>
-        <module>connector-logback</module>
-        <module>connector-log4j</module>
-        <module>bom</module>
-    </modules>
-
-    <properties>
-        <connector-type>${project.artifactId}</connector-type>
-        <connector-jar>baxter-log-connector.jar</connector-jar>
-        <unix.package>baxter-log-connector</unix.package>
-        <unix.application.group.name>Java</unix.application.group.name>
-    </properties>
 
 </project>
