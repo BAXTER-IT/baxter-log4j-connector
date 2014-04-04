@@ -1,26 +1,49 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.baxter.log</groupId>
-        <artifactId>baxter-log-connector</artifactId>
-        <version>1.0.2-SNAPSHOT</version>
+        <groupId>com.baxter</groupId>
+        <artifactId>baxter-connector</artifactId>
+        <version>1.0.1</version>
     </parent>
 
+    <groupId>com.baxter.log</groupId>
     <artifactId>baxter-log4j-connector</artifactId>
     <name>Baxter Log4J Connector</name>
+    <version>1.2.16-SNAPSHOT</version>
+
+    <url>https://repository-baxter.forge.cloudbees.com/private/sites/log4j-connector/</url>
+
+    <scm>
+        <connection>scm:git:ssh://git@git.cloudbees.com/baxter/baxter-log4j-connector.git</connection>
+        <developerConnection>scm:git:ssh://git@git.cloudbees.com/baxter/baxter-log4j-connector.git</developerConnection>
+        <url>ssh://git@git.cloudbees.com/baxter/baxter-log4j-connector.git</url>
+        <tag>HEAD</tag>
+    </scm>
+
 
     <dependencyManagement>
 
         <dependencies>
 
             <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>baxter-log-connector-bom</artifactId>
-                <type>pom</type>
-                <version>${project.version}</version>
-                <scope>import</scope>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.7.5</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
+                <version>1.7.5</version>
+            </dependency>
+
+            <dependency>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>${log4j.version}</version>
             </dependency>
 
         </dependencies>
@@ -51,6 +74,27 @@
 
     <profiles>
 
+        <profile>
+            <id>Distribution-CloudBees</id>
+            <distributionManagement>
+                <site>
+                    <id>cloudbees-private-repository</id>
+                    <name>Baxter Projects Site</name>
+                    <url>dav:https://repository-baxter.forge.cloudbees.com/private/sites/log4j-connector/</url>
+                </site>
+            </distributionManagement>
+        </profile>
+        
+        <profile>
+            <id>Distribution-Baxter</id>
+            <distributionManagement>
+                <site>
+                    <id>qa-apache</id>
+                    <url>scp://qa.baxtersol.bit/var/www/products/log4j-connector/</url>
+                </site>
+            </distributionManagement>
+        </profile>
+        
         <profile>
             <id>TARGZ</id>
             <activation>
@@ -85,6 +129,9 @@
                             <execution>
                                 <id>build-deb-installer</id>
                                 <configuration>
+                                    <deb combine.children="append">
+                                        <provides>${unix.package},${connector-type},baxter-log4j-connector-${log4j.version}</provides>
+                                    </deb>
                                     <assembly combine.children="append">
                                         <copyArtifact>
                                             <artifact>org.slf4j:slf4j-api</artifact>
@@ -121,11 +168,23 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>rpm-maven-plugin</artifactId>
+                        <configuration>
+                            <provides combine.children="append">
+                                <provide>baxter-log4j-connector-${log4j.version}</provide>
+                            </provides>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
         </profile>
 
     </profiles>
+
+    <properties>
+        <!-- Note the artifact version should be in sync on release -->
+        <log4j.version>1.2.16</log4j.version>
+        <!-- Same value for all Log Connectors -->
+        <connector-type>baxter-log-connector</connector-type>
+    </properties>
 
 </project>
