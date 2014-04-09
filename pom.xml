@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.baxter</groupId>
         <artifactId>baxter-connector</artifactId>
-        <version>1.0.2</version>
+        <version>1.0.3</version>
     </parent>
 
     <groupId>com.baxter.log</groupId>
@@ -79,7 +79,7 @@
                 <site>
                     <id>cloudbees-private-repository</id>
                     <name>Baxter Projects Site</name>
-                    <url>dav:https://repository-baxter.forge.cloudbees.com/private/sites/connector/log4j/</url>
+                    <url>dav:https://repository-baxter.forge.cloudbees.com/private/sites/log4j-connector/</url>
                 </site>
             </distributionManagement>
         </profile>
