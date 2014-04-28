@@ -16,9 +16,9 @@
     <url>https://repository-baxter.forge.cloudbees.com/private/sites/log4j-connector/</url>
 
     <scm>
-        <connection>scm:git:ssh://git@git.cloudbees.com/baxter/baxter-log4j-connector.git</connection>
-        <developerConnection>scm:git:ssh://git@git.cloudbees.com/baxter/baxter-log4j-connector.git</developerConnection>
-        <url>ssh://git@git.cloudbees.com/baxter/baxter-log4j-connector.git</url>
+        <connection>scm:git:ssh://git@github.com:BAXTER-IT/baxter-connector.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com:BAXTER-IT/baxter-connector.git</developerConnection>
+        <url>ssh://git@github.com:BAXTER-IT/baxter-connector.git</url>
         <tag>HEAD</tag>
     </scm>
 
