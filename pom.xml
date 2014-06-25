@@ -8,7 +8,7 @@
         <version>1.0.3</version>
     </parent>
 
-    <groupId>com.baxter.log</groupId>
+    <groupId>com.baxter.connector.log</groupId>
     <artifactId>baxter-log4j-connector</artifactId>
     <name>Baxter Log4J Connector</name>
     <version>0.0.2-SNAPSHOT</version>
@@ -181,7 +181,7 @@
 
     <properties>
         <!-- Note the artifact version should be in sync on release -->
-        <log4j.version>1.2.16</log4j.version>
+        <log4j.version>${project.version}</log4j.version>
         <!-- Same value for all Log Connectors -->
         <connector-type>baxter-log-connector</connector-type>
     </properties>
