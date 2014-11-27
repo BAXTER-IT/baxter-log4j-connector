@@ -199,10 +199,12 @@
             <id>Logstash</id>
 
             <dependencies>
-                <groupId>com.baxter.log4j.appender</groupId>
-                <artifactId>elasticsearch</artifactId>
-                <version>1.0</version>
-                <scope>runtime</scope>
+                <dependency>
+                    <groupId>com.baxter.log4j.appender</groupId>
+                    <artifactId>elasticsearch</artifactId>
+                    <version>1.0</version>
+                    <scope>runtime</scope>
+                </dependency>
             </dependencies>
         </profile>
 
