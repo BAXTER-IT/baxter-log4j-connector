@@ -107,8 +107,8 @@ public class ESAppender extends AppenderSkeleton
 	  {
 		final long startTime = System.currentTimeMillis();
 		final BulkResponse bulkResponse = bulkRequest.execute().actionGet();
-		System.err.printf("currentEvents.size(): %d$1 queuingWarningLevel: %d$2 processTime: %d$3\n", currentEvents.size(),
-		    queuingWarningLevel, (System.currentTimeMillis() - startTime));
+		System.err.printf("currentEvents.size(): %1$d queuingWarningLevel: %2$d processTime: %3$d\n", currentEvents.size(),
+			queuingWarningLevel, (System.currentTimeMillis() - startTime));
 	  }
 	  else
 	  {
@@ -130,7 +130,7 @@ public class ESAppender extends AppenderSkeleton
 	  json.put("timestamp", event.getTimeStamp());
 	  json.put("logger", event.getLoggerName());
 	  json.put("level", event.getLevel().toString());
-	  json.put("message", event.getMessage());
+	  json.put("message", getLayout().format(event));
 	}
 
 	protected void writeThrowable(Map<String, Object> json, LoggingEvent event)
@@ -158,7 +158,7 @@ public class ESAppender extends AppenderSkeleton
   @Override
   public boolean requiresLayout()
   {
-	return false;
+	return true;
   }
 
   @Override
@@ -183,7 +183,7 @@ public class ESAppender extends AppenderSkeleton
 	super.activateOptions();
 
 	final Settings settings = ImmutableSettings.settingsBuilder().put("cluster.name", clusterName)
-	    .put("client.transport.ignore_cluster_name", "true").build();
+		.put("client.transport.ignore_cluster_name", "true").build();
 	client = new TransportClient().addTransportAddress(new InetSocketTransportAddress(host, port));
 
 	thread.start();
@@ -248,6 +248,6 @@ public class ESAppender extends AppenderSkeleton
   public String toString()
   {
 	return "ESAppender [host=" + host + ", port=" + port + ", clusterName=" + clusterName + ", index=" + index + ", type=" + type
-	    + ", queuingWarningLevel=" + queuingWarningLevel + "]";
+		+ ", queuingWarningLevel=" + queuingWarningLevel + "]";
   }
 }

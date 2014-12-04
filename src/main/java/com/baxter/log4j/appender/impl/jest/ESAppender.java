@@ -18,6 +18,7 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.PatternLayout;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableInformation;
 
@@ -36,6 +37,7 @@ public class ESAppender extends AppenderSkeleton
   private String clusterName;
   private String index, type;
   private int queuingWarningLevel;
+  private PatternLayout layout;
 
   public ESAppender()
   {
@@ -96,7 +98,7 @@ public class ESAppender extends AppenderSkeleton
 	  {
 		final long startTime = System.currentTimeMillis();
 		client.execute(bulk.build());
-		System.err.printf("currentEvents.size(): %d$1 queuingWarningLevel: %d$2 processTime: %d$3\n", currentEvents.size(),
+		System.err.printf("currentEvents.size(): %1$d queuingWarningLevel: %2$d processTime: %3$d\n", currentEvents.size(),
 		    queuingWarningLevel, (System.currentTimeMillis() - startTime));
 	  }
 	  else
@@ -119,7 +121,7 @@ public class ESAppender extends AppenderSkeleton
 	  json.put("timestamp", event.getTimeStamp());
 	  json.put("logger", event.getLoggerName());
 	  json.put("level", event.getLevel().toString());
-	  json.put("message", event.getMessage());
+	  json.put("message", getLayout().format(event));
 	}
 
 	protected void writeThrowable(Map<String, Object> json, LoggingEvent event)
@@ -147,7 +149,7 @@ public class ESAppender extends AppenderSkeleton
   @Override
   public boolean requiresLayout()
   {
-	return false;
+	return true;
   }
 
   @Override
