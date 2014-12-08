@@ -10,6 +10,7 @@ import io.searchbox.core.Index;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.text.DateFormat;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.PatternLayout;
+import org.apache.log4j.helpers.ISO8601DateFormat;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableInformation;
 
@@ -116,10 +118,12 @@ public class ESAppender extends AppenderSkeleton
 	  return result.toString();
 	}
 
+	DateFormat df = new ISO8601DateFormat();
+
 	protected void writeBasic(Map<String, Object> json, LoggingEvent event)
 	{
 	  json.put("hostName", getHost());
-	  json.put("timestamp", event.getTimeStamp());
+	  json.put("timestamp", df.format(event.getTimeStamp()));
 	  json.put("logger", event.getLoggerName());
 	  json.put("level", event.getLevel().toString());
 	  json.put("message", getLayout().format(event));
