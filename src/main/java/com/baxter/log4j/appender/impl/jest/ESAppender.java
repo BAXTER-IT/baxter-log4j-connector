@@ -41,6 +41,7 @@ public class ESAppender extends AppenderSkeleton
 
   public ESAppender()
   {
+	setLayout(new PatternLayout("[%d{ISO8601}] - %m%n"));
   }
 
   class WorkerThread extends Thread

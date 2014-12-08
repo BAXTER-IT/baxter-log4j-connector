@@ -12,6 +12,7 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.PatternLayout;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableInformation;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
@@ -40,6 +41,7 @@ public class ESAppender extends AppenderSkeleton
 
   public ESAppender()
   {
+	setLayout(new PatternLayout("[%d{ISO8601}] - %m%n"));
   }
 
   class WorkerThread extends Thread
@@ -108,7 +110,7 @@ public class ESAppender extends AppenderSkeleton
 		final long startTime = System.currentTimeMillis();
 		final BulkResponse bulkResponse = bulkRequest.execute().actionGet();
 		System.err.printf("currentEvents.size(): %1$d queuingWarningLevel: %2$d processTime: %3$d\n", currentEvents.size(),
-			queuingWarningLevel, (System.currentTimeMillis() - startTime));
+		    queuingWarningLevel, (System.currentTimeMillis() - startTime));
 	  }
 	  else
 	  {
@@ -183,7 +185,7 @@ public class ESAppender extends AppenderSkeleton
 	super.activateOptions();
 
 	final Settings settings = ImmutableSettings.settingsBuilder().put("cluster.name", clusterName)
-		.put("client.transport.ignore_cluster_name", "true").build();
+	    .put("client.transport.ignore_cluster_name", "true").build();
 	client = new TransportClient().addTransportAddress(new InetSocketTransportAddress(host, port));
 
 	thread.start();
@@ -248,6 +250,6 @@ public class ESAppender extends AppenderSkeleton
   public String toString()
   {
 	return "ESAppender [host=" + host + ", port=" + port + ", clusterName=" + clusterName + ", index=" + index + ", type=" + type
-		+ ", queuingWarningLevel=" + queuingWarningLevel + "]";
+	    + ", queuingWarningLevel=" + queuingWarningLevel + "]";
   }
 }
