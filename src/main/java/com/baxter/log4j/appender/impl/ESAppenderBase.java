@@ -33,7 +33,7 @@ public abstract class ESAppenderBase extends AppenderSkeleton
   protected String type;
   protected int queuingWarningLevel;
 
-  private final DateFormat df = new ISO8601DateFormat();
+  protected final DateFormat dateFormat = new ISO8601DateFormat();
 
   public ESAppenderBase()
   {
@@ -196,13 +196,14 @@ public abstract class ESAppenderBase extends AppenderSkeleton
 	return result.toString();
   }
 
-  protected void writeBasic(Map<String, Object> json, LoggingEvent event)
+  protected void writeBasic(Map<String, Object> json, LoggingEvent loggingEvent)
   {
 	json.put("hostName", getHost());
-	json.put("timestamp", df.format(event.getTimeStamp()));
-	json.put("logger", event.getLoggerName());
-	json.put("level", event.getLevel().toString());
-	json.put("message", getLayout().format(event));
+	json.put("rawtimestamp", loggingEvent.getTimeStamp());
+	json.put("timestamp", dateFormat.format(loggingEvent.getTimeStamp()));
+	json.put("logger", loggingEvent.getLoggerName());
+	json.put("level", loggingEvent.getLevel().toString());
+	json.put("message", getLayout().format(loggingEvent));
   }
 
   protected void writeThrowable(Map<String, Object> json, LoggingEvent event)
