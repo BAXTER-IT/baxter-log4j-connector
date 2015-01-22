@@ -7,7 +7,6 @@ import java.text.DateFormat;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.log4j.AppenderSkeleton;
@@ -22,7 +21,6 @@ public abstract class ESAppenderBase extends AppenderSkeleton
 {
   private final ReentrantLock lock = new ReentrantLock();
   List<LoggingEvent> events = new LinkedList<LoggingEvent>();
-  final Semaphore semaphore = new Semaphore(1);
 
   WorkerThread thread = new WorkerThread();
 
@@ -51,7 +49,6 @@ public abstract class ESAppenderBase extends AppenderSkeleton
 	  {
 		try
 		{
-		  semaphore.acquire();
 		  lock.lock();
 
 		  List<LoggingEvent> currentEvents = null;
@@ -91,7 +88,6 @@ public abstract class ESAppenderBase extends AppenderSkeleton
   {
 	events.clear();
 	thread.isRunning = false;
-	semaphore.release();
   }
 
   @Override
@@ -107,8 +103,6 @@ public abstract class ESAppenderBase extends AppenderSkeleton
 	try
 	{
 	  events.add(event);
-
-	  semaphore.release();
 	}
 	finally
 	{
@@ -122,7 +116,7 @@ public abstract class ESAppenderBase extends AppenderSkeleton
 	super.activateOptions();
 
 	final Settings settings = ImmutableSettings.settingsBuilder().put("cluster.name", clusterName)
-		.put("client.transport.ignore_cluster_name", "true").build();
+	    .put("client.transport.ignore_cluster_name", "true").build();
 	thread.start();
   }
 
@@ -185,7 +179,7 @@ public abstract class ESAppenderBase extends AppenderSkeleton
   public String toString()
   {
 	return "ESAppender [host=" + host + ", port=" + port + ", clusterName=" + clusterName + ", index=" + index + ", type=" + type
-		+ ", queuingWarningLevel=" + queuingWarningLevel + "]";
+	    + ", queuingWarningLevel=" + queuingWarningLevel + "]";
   }
 
   protected String getStackTrace(Throwable aThrowable)
