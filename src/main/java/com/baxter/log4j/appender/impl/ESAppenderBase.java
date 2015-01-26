@@ -7,7 +7,7 @@ import java.text.DateFormat;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.Semaphore;
 
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.PatternLayout;
@@ -19,8 +19,8 @@ import org.elasticsearch.common.settings.Settings;
 
 public abstract class ESAppenderBase extends AppenderSkeleton
 {
-  private final ReentrantLock lock = new ReentrantLock();
   List<LoggingEvent> events = new LinkedList<LoggingEvent>();
+  final Semaphore semaphore = new Semaphore(1);
 
   WorkerThread thread = new WorkerThread();
 
@@ -49,7 +49,7 @@ public abstract class ESAppenderBase extends AppenderSkeleton
 	  {
 		try
 		{
-		  lock.lock();
+		  semaphore.acquire();
 
 		  List<LoggingEvent> currentEvents = null;
 		  try
@@ -59,7 +59,6 @@ public abstract class ESAppenderBase extends AppenderSkeleton
 		  }
 		  finally
 		  {
-			lock.unlock();
 		  }
 
 		  if (!currentEvents.isEmpty())
@@ -88,6 +87,7 @@ public abstract class ESAppenderBase extends AppenderSkeleton
   {
 	events.clear();
 	thread.isRunning = false;
+	semaphore.release();
   }
 
   @Override
@@ -99,15 +99,9 @@ public abstract class ESAppenderBase extends AppenderSkeleton
   @Override
   protected void append(LoggingEvent event)
   {
-	lock.lock();
-	try
-	{
-	  events.add(event);
-	}
-	finally
-	{
-	  lock.unlock();
-	}
+	events.add(event);
+
+	semaphore.release();
   }
 
   @Override
