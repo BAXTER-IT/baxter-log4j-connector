@@ -12,7 +12,7 @@ public class test
   {
 	final ESAppender es = new ESAppender();
 
-	es.setHost("172.16.1.11");
+	es.setHost("192.168.6.31");
 	es.setPort(9300);
 	es.setClusterName("elasticsearch");
 	es.setIndex("setindex");
