@@ -42,6 +42,11 @@ public abstract class ESAppenderBase extends AppenderSkeleton
   {
 	boolean isRunning = true;
 
+	WorkerThread()
+	{
+	  setDaemon(true);
+	}
+
 	@Override
 	public void run()
 	{
@@ -110,7 +115,7 @@ public abstract class ESAppenderBase extends AppenderSkeleton
 	super.activateOptions();
 
 	final Settings settings = ImmutableSettings.settingsBuilder().put("cluster.name", clusterName)
-	    .put("client.transport.ignore_cluster_name", "true").build();
+		.put("client.transport.ignore_cluster_name", "true").build();
 	thread.start();
   }
 
@@ -173,7 +178,7 @@ public abstract class ESAppenderBase extends AppenderSkeleton
   public String toString()
   {
 	return "ESAppender [host=" + host + ", port=" + port + ", clusterName=" + clusterName + ", index=" + index + ", type=" + type
-	    + ", queuingWarningLevel=" + queuingWarningLevel + "]";
+		+ ", queuingWarningLevel=" + queuingWarningLevel + "]";
   }
 
   protected String getStackTrace(Throwable aThrowable)
