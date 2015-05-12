@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +12,6 @@ import java.util.concurrent.Semaphore;
 
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.PatternLayout;
-import org.apache.log4j.helpers.ISO8601DateFormat;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableInformation;
 import org.elasticsearch.common.settings.ImmutableSettings;
@@ -31,7 +31,7 @@ public abstract class ESAppenderBase extends AppenderSkeleton
   protected String type;
   protected int queuingWarningLevel;
 
-  protected final DateFormat dateFormat = new ISO8601DateFormat();
+  protected final DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss.SSSZ");
 
   public ESAppenderBase()
   {
@@ -115,7 +115,7 @@ public abstract class ESAppenderBase extends AppenderSkeleton
 	super.activateOptions();
 
 	final Settings settings = ImmutableSettings.settingsBuilder().put("cluster.name", clusterName)
-		.put("client.transport.ignore_cluster_name", "true").build();
+	    .put("client.transport.ignore_cluster_name", "true").build();
 	thread.start();
   }
 
@@ -178,7 +178,7 @@ public abstract class ESAppenderBase extends AppenderSkeleton
   public String toString()
   {
 	return "ESAppender [host=" + host + ", port=" + port + ", clusterName=" + clusterName + ", index=" + index + ", type=" + type
-		+ ", queuingWarningLevel=" + queuingWarningLevel + "]";
+	    + ", queuingWarningLevel=" + queuingWarningLevel + "]";
   }
 
   protected String getStackTrace(Throwable aThrowable)
