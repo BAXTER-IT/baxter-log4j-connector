@@ -189,4 +189,14 @@ public abstract class ESAppenderBase extends AppenderSkeleton
   }
 
   protected abstract void processEvents(List<LoggingEvent> currentEvents) throws Exception;
+
+  public String getClientHost()
+  {
+	return clientHost;
+  }
+
+  public void setClientHost(String clientHost)
+  {
+	this.clientHost = clientHost;
+  }
 }
