@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.ThrowableInformation;
 
 import com.baxter.log4j.appender.impl.ESAppenderBase;
 
@@ -47,6 +48,29 @@ public class ESAppender extends ESAppenderBase
 	}
   }
 
+  protected void writeBasic(Map<String, Object> json, LoggingEvent loggingEvent)
+  {
+	json.put("hostName", getElasticSearchHost());
+	json.put("rawtimestamp", loggingEvent.getTimeStamp());
+	json.put("timestamp", dateFormat.format(loggingEvent.getTimeStamp()));
+	json.put("logger", loggingEvent.getLoggerName());
+	json.put("level", loggingEvent.getLevel().toString());
+	json.put("message", getLayout().format(loggingEvent));
+	json.put("clientHost", clientHost);
+  }
+
+  protected void writeThrowable(Map<String, Object> json, LoggingEvent event)
+  {
+	final ThrowableInformation ti = event.getThrowableInformation();
+	if (ti != null)
+	{
+	  final Throwable t = ti.getThrowable();
+
+	  json.put("className", t.getClass().getCanonicalName());
+	  json.put("stackTrace", getStackTrace(t));
+	}
+  }
+
   @Override
   public void close()
   {
@@ -58,7 +82,7 @@ public class ESAppender extends ESAppenderBase
   public void activateOptions()
   {
 	final JestClientFactory factory = new JestClientFactory();
-	factory.setClientConfig(new ClientConfig.Builder("http://" + host + ":" + port).multiThreaded(true).build());
+	factory.setClientConfig(new ClientConfig.Builder("http://" + elasticSearchHost + ":" + port).multiThreaded(true).build());
 
 	client = factory.getObject();
 

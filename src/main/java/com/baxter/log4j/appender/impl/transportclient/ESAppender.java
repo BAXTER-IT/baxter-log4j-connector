@@ -36,6 +36,7 @@ public class ESAppender extends ESAppenderBase
 	  source.field("message", loggingEvent.getMessage());
 	  source.field("logger", loggingEvent.getLoggerName());
 	  source.field("level", loggingEvent.getLevel().toString());
+	  source.field("clientHost", clientHost);
 
 	  final ThrowableInformation throwableInformation = loggingEvent.getThrowableInformation();
 	  if (throwableInformation != null)
@@ -75,7 +76,7 @@ public class ESAppender extends ESAppenderBase
   {
 	super.activateOptions();
 
-	client = new TransportClient().addTransportAddress(new InetSocketTransportAddress(host, port));
+	client = new TransportClient().addTransportAddress(new InetSocketTransportAddress(elasticSearchHost, port));
   }
 
 }

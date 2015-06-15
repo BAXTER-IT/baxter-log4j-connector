@@ -7,13 +7,11 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Semaphore;
 
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.spi.ThrowableInformation;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 
@@ -24,7 +22,8 @@ public abstract class ESAppenderBase extends AppenderSkeleton
 
   WorkerThread thread = new WorkerThread();
 
-  protected String host;
+  protected String elasticSearchHost;
+  protected String clientHost;
   protected int port;
   private String clusterName;
   protected String index;
@@ -119,14 +118,14 @@ public abstract class ESAppenderBase extends AppenderSkeleton
 	thread.start();
   }
 
-  public String getHost()
+  public String getElasticSearchHost()
   {
-	return host;
+	return elasticSearchHost;
   }
 
   public void setHost(String host)
   {
-	this.host = host;
+	this.elasticSearchHost = host;
   }
 
   public int getPort()
@@ -177,8 +176,8 @@ public abstract class ESAppenderBase extends AppenderSkeleton
   @Override
   public String toString()
   {
-	return "ESAppender [host=" + host + ", port=" + port + ", clusterName=" + clusterName + ", index=" + index + ", type=" + type
-	    + ", queuingWarningLevel=" + queuingWarningLevel + "]";
+	return "ESAppender [host=" + elasticSearchHost + ", port=" + port + ", clusterName=" + clusterName + ", index=" + index
+	    + ", type=" + type + ", queuingWarningLevel=" + queuingWarningLevel + "]";
   }
 
   protected String getStackTrace(Throwable aThrowable)
@@ -187,28 +186,6 @@ public abstract class ESAppenderBase extends AppenderSkeleton
 	final PrintWriter printWriter = new PrintWriter(result);
 	aThrowable.printStackTrace(printWriter);
 	return result.toString();
-  }
-
-  protected void writeBasic(Map<String, Object> json, LoggingEvent loggingEvent)
-  {
-	json.put("hostName", getHost());
-	json.put("rawtimestamp", loggingEvent.getTimeStamp());
-	json.put("timestamp", dateFormat.format(loggingEvent.getTimeStamp()));
-	json.put("logger", loggingEvent.getLoggerName());
-	json.put("level", loggingEvent.getLevel().toString());
-	json.put("message", getLayout().format(loggingEvent));
-  }
-
-  protected void writeThrowable(Map<String, Object> json, LoggingEvent event)
-  {
-	final ThrowableInformation ti = event.getThrowableInformation();
-	if (ti != null)
-	{
-	  final Throwable t = ti.getThrowable();
-
-	  json.put("className", t.getClass().getCanonicalName());
-	  json.put("stackTrace", getStackTrace(t));
-	}
   }
 
   protected abstract void processEvents(List<LoggingEvent> currentEvents) throws Exception;
