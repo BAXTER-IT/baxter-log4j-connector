@@ -123,7 +123,7 @@ public abstract class ESAppenderBase extends AppenderSkeleton
 	return elasticSearchHost;
   }
 
-  public void setHost(String host)
+  public void setElasticSearchHost(String host)
   {
 	this.elasticSearchHost = host;
   }
@@ -177,7 +177,7 @@ public abstract class ESAppenderBase extends AppenderSkeleton
   public String toString()
   {
 	return "ESAppender [host=" + elasticSearchHost + ", port=" + port + ", clusterName=" + clusterName + ", index=" + index
-	    + ", type=" + type + ", queuingWarningLevel=" + queuingWarningLevel + "]";
+	    + ", type=" + type + ", queuingWarningLevel=" + queuingWarningLevel + ", clientHost=" + clientHost + "]";
   }
 
   protected String getStackTrace(Throwable aThrowable)

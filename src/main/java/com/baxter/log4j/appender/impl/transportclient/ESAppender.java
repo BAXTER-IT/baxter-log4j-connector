@@ -31,6 +31,8 @@ public class ESAppender extends ESAppenderBase
 	for (final LoggingEvent loggingEvent : currentEvents)
 	{
 	  final XContentBuilder source = jsonBuilder().startObject();
+
+	  source.field("hostName", getElasticSearchHost());
 	  source.field("rawtimestamp", loggingEvent.getTimeStamp());
 	  source.field("timestamp", dateFormat.format(loggingEvent.getTimeStamp()));
 	  source.field("message", loggingEvent.getMessage());
