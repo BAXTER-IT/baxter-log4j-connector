@@ -7,7 +7,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.PatternLayout;
@@ -17,8 +17,7 @@ import org.elasticsearch.common.settings.Settings;
 
 public abstract class ESAppenderBase extends AppenderSkeleton
 {
-  List<LoggingEvent> events = new LinkedList<LoggingEvent>();
-  final Semaphore semaphore = new Semaphore(1);
+  LinkedBlockingQueue<LoggingEvent> events = new LinkedBlockingQueue<LoggingEvent>();
 
   WorkerThread thread = new WorkerThread();
 
@@ -53,13 +52,11 @@ public abstract class ESAppenderBase extends AppenderSkeleton
 	  {
 		try
 		{
-		  semaphore.acquire();
-
-		  List<LoggingEvent> currentEvents = null;
+		  List<LoggingEvent> currentEvents = new LinkedList<LoggingEvent>();
 		  try
 		  {
-			currentEvents = events;
-			events = new LinkedList<LoggingEvent>();
+			currentEvents.add(events.take());
+			events.drainTo(currentEvents);
 		  }
 		  finally
 		  {
@@ -91,7 +88,6 @@ public abstract class ESAppenderBase extends AppenderSkeleton
   {
 	events.clear();
 	thread.isRunning = false;
-	semaphore.release();
   }
 
   @Override
@@ -104,8 +100,6 @@ public abstract class ESAppenderBase extends AppenderSkeleton
   protected void append(LoggingEvent event)
   {
 	events.add(event);
-
-	semaphore.release();
   }
 
   @Override
