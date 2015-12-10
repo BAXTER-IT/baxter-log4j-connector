@@ -29,7 +29,10 @@ public abstract class ESAppenderBase extends AppenderSkeleton
   protected String type;
   protected int queuingWarningLevel;
 
-  protected final DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss.SSSZ");
+  protected final DateFormat dateFormatForQuery = new SimpleDateFormat("yyyyMMdd'T'HHmmss.SSSZ");
+
+  protected final DateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd");
+  protected final DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss.SSSZ");
 
   public ESAppenderBase()
   {
@@ -52,7 +55,7 @@ public abstract class ESAppenderBase extends AppenderSkeleton
 	  {
 		try
 		{
-		  List<LoggingEvent> currentEvents = new LinkedList<LoggingEvent>();
+		  final List<LoggingEvent> currentEvents = new LinkedList<LoggingEvent>();
 		  try
 		  {
 			currentEvents.add(events.take());
@@ -74,7 +77,7 @@ public abstract class ESAppenderBase extends AppenderSkeleton
 	  }
 	}
 
-	protected String getStackTrace(Throwable aThrowable)
+	protected String getStackTrace(final Throwable aThrowable)
 	{
 	  final Writer result = new StringWriter();
 	  final PrintWriter printWriter = new PrintWriter(result);
@@ -97,7 +100,7 @@ public abstract class ESAppenderBase extends AppenderSkeleton
   }
 
   @Override
-  protected void append(LoggingEvent event)
+  protected void append(final LoggingEvent event)
   {
 	events.add(event);
   }
@@ -117,7 +120,7 @@ public abstract class ESAppenderBase extends AppenderSkeleton
 	return elasticSearchHost;
   }
 
-  public void setElasticSearchHost(String host)
+  public void setElasticSearchHost(final String host)
   {
 	this.elasticSearchHost = host;
   }
@@ -127,7 +130,7 @@ public abstract class ESAppenderBase extends AppenderSkeleton
 	return port;
   }
 
-  public void setPort(int port)
+  public void setPort(final int port)
   {
 	this.port = port;
   }
@@ -137,7 +140,7 @@ public abstract class ESAppenderBase extends AppenderSkeleton
 	return clusterName;
   }
 
-  public void setClusterName(String clusterName)
+  public void setClusterName(final String clusterName)
   {
 	this.clusterName = clusterName;
   }
@@ -147,7 +150,7 @@ public abstract class ESAppenderBase extends AppenderSkeleton
 	return index;
   }
 
-  public void setIndex(String index)
+  public void setIndex(final String index)
   {
 	this.index = index;
   }
@@ -157,12 +160,12 @@ public abstract class ESAppenderBase extends AppenderSkeleton
 	return type;
   }
 
-  public void setType(String type)
+  public void setType(final String type)
   {
 	this.type = type;
   }
 
-  public void setQueuingWarningLevel(int queuingWarningLevel)
+  public void setQueuingWarningLevel(final int queuingWarningLevel)
   {
 	this.queuingWarningLevel = queuingWarningLevel;
   }
@@ -174,7 +177,7 @@ public abstract class ESAppenderBase extends AppenderSkeleton
 	    + ", type=" + type + ", queuingWarningLevel=" + queuingWarningLevel + ", clientHost=" + clientHost + "]";
   }
 
-  protected String getStackTrace(Throwable aThrowable)
+  protected String getStackTrace(final Throwable aThrowable)
   {
 	final Writer result = new StringWriter();
 	final PrintWriter printWriter = new PrintWriter(result);
@@ -189,7 +192,7 @@ public abstract class ESAppenderBase extends AppenderSkeleton
 	return clientHost;
   }
 
-  public void setClientHost(String clientHost)
+  public void setClientHost(final String clientHost)
   {
 	this.clientHost = clientHost;
   }

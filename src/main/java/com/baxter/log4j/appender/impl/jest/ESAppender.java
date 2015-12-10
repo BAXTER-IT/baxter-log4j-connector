@@ -1,12 +1,5 @@
 package com.baxter.log4j.appender.impl.jest;
 
-import io.searchbox.client.JestClient;
-import io.searchbox.client.JestClientFactory;
-import io.searchbox.client.config.ClientConfig;
-import io.searchbox.core.Bulk;
-import io.searchbox.core.Bulk.Builder;
-import io.searchbox.core.Index;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,12 +9,19 @@ import org.apache.log4j.spi.ThrowableInformation;
 
 import com.baxter.log4j.appender.impl.ESAppenderBase;
 
+import io.searchbox.client.JestClient;
+import io.searchbox.client.JestClientFactory;
+import io.searchbox.client.config.ClientConfig;
+import io.searchbox.core.Bulk;
+import io.searchbox.core.Bulk.Builder;
+import io.searchbox.core.Index;
+
 public class ESAppender extends ESAppenderBase
 {
   private JestClient client;
 
   @Override
-  protected void processEvents(List<LoggingEvent> currentEvents) throws Exception
+  protected void processEvents(final List<LoggingEvent> currentEvents) throws Exception
   {
 	final Builder bulk = new Bulk.Builder();
 
@@ -40,7 +40,7 @@ public class ESAppender extends ESAppenderBase
 	  final long startTime = System.currentTimeMillis();
 	  client.execute(bulk.build());
 	  System.err.printf("currentEvents.size(): %1$d queuingWarningLevel: %2$d processTime: %3$d\n", currentEvents.size(),
-		  queuingWarningLevel, (System.currentTimeMillis() - startTime));
+	      queuingWarningLevel, (System.currentTimeMillis() - startTime));
 	}
 	else
 	{
@@ -48,18 +48,20 @@ public class ESAppender extends ESAppenderBase
 	}
   }
 
-  protected void writeBasic(Map<String, Object> json, LoggingEvent loggingEvent)
+  protected void writeBasic(final Map<String, Object> json, final LoggingEvent loggingEvent)
   {
 	json.put("hostName", getElasticSearchHost());
-	json.put("rawtimestamp", loggingEvent.getTimeStamp());
-	json.put("timestamp", dateFormat.format(loggingEvent.getTimeStamp()));
+	//	json.put("rawtimestamp", loggingEvent.getTimeStamp());
+	json.put("timestamp", dateFormatForQuery.format(loggingEvent.getTimeStamp()));
+	json.put("date", dateFormat.format(loggingEvent.getTimeStamp()));
+	json.put("time", timeFormat.format(loggingEvent.getTimeStamp()));
 	json.put("logger", loggingEvent.getLoggerName());
 	json.put("level", loggingEvent.getLevel().toString());
 	json.put("message", getLayout().format(loggingEvent));
 	json.put("clientHost", clientHost);
   }
 
-  protected void writeThrowable(Map<String, Object> json, LoggingEvent event)
+  protected void writeThrowable(final Map<String, Object> json, final LoggingEvent event)
   {
 	final ThrowableInformation ti = event.getThrowableInformation();
 	if (ti != null)

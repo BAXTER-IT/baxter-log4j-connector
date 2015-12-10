@@ -24,7 +24,7 @@ public class ESAppender extends ESAppenderBase
   }
 
   @Override
-  protected void processEvents(List<LoggingEvent> currentEvents) throws Exception
+  protected void processEvents(final List<LoggingEvent> currentEvents) throws Exception
   {
 	final BulkRequestBuilder bulkRequest = client.prepareBulk();
 
@@ -33,8 +33,10 @@ public class ESAppender extends ESAppenderBase
 	  final XContentBuilder source = jsonBuilder().startObject();
 
 	  source.field("hostName", getElasticSearchHost());
-	  source.field("rawtimestamp", loggingEvent.getTimeStamp());
-	  source.field("timestamp", dateFormat.format(loggingEvent.getTimeStamp()));
+	  //	  source.field("rawtimestamp", loggingEvent.getTimeStamp());
+	  source.field("timestamp", dateFormatForQuery.format(loggingEvent.getTimeStamp()));
+	  source.field("date", dateFormat.format(loggingEvent.getTimeStamp()));
+	  source.field("time", timeFormat.format(loggingEvent.getTimeStamp()));
 	  source.field("message", loggingEvent.getMessage());
 	  source.field("logger", loggingEvent.getLoggerName());
 	  source.field("level", loggingEvent.getLevel().toString());
@@ -57,7 +59,7 @@ public class ESAppender extends ESAppenderBase
 	  final long startTime = System.currentTimeMillis();
 	  final BulkResponse bulkResponse = bulkRequest.execute().actionGet();
 	  System.err.printf("currentEvents.size(): %1$d queuingWarningLevel: %2$d processTime: %3$d\n", currentEvents.size(),
-		  queuingWarningLevel, (System.currentTimeMillis() - startTime));
+	      queuingWarningLevel, (System.currentTimeMillis() - startTime));
 	}
 	else
 	{
