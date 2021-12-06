@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.baxter</groupId>
         <artifactId>baxter-connector</artifactId>
-        <version>1.0.3</version>
+        <version>1.2</version>
     </parent>
 
     <groupId>com.baxter.connector.log</groupId>
