@@ -198,7 +198,7 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<!-- Note the artifact version should be in sync on release -->
-		<log4j.version>2.14.0</log4j.version>
+		<log4j.version>2.15.0</log4j.version>
 		<slf4j.version>1.7.32</slf4j.version>
 		<!-- Same value for all Log Connectors -->
 		<connector-type>baxter-log-connector</connector-type>
