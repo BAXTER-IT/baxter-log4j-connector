@@ -12,7 +12,7 @@
 	<groupId>com.baxter.connector.log</groupId>
 	<artifactId>baxter-log4j-connector</artifactId>
 	<name>Baxter Log4J Connector</name>
-	<version>2.18.0</version>
+	<version>2.25.3</version>
 
 	<url>https://repository-baxter.forge.cloudbees.com/private/sites/log4j-connector/</url>
 
@@ -28,8 +28,8 @@
 		<maven.compiler.source>12</maven.compiler.source>
 		<maven.compiler.target>12</maven.compiler.target>
 		<!-- Note the artifact version should be in sync on release -->
-		<log4j.version>2.18.0</log4j.version>
-		<slf4j.version>1.7.36</slf4j.version>
+		<log4j.version>2.25.3</log4j.version>
+		<slf4j.version>2.0.17</slf4j.version>
 		<!-- Same value for all Log Connectors -->
 		<connector-type>baxter-log-connector</connector-type>
 	</properties>
