@@ -156,7 +156,7 @@
 											<toDir>${unix.application.lib.dir}</toDir>
 										</copyArtifact>
 										<copyArtifact>
-											<artifact>org.apache.logging.log4j:log4j-slf4j-impl</artifact>
+											<artifact>org.apache.logging.log4j:log4j-slf4j2-impl</artifact>
 											<toDir>${unix.application.lib.dir}</toDir>
 										</copyArtifact>
 										<copyArtifact>
