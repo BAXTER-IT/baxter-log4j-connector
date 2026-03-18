@@ -28,8 +28,8 @@
 		<maven.compiler.source>12</maven.compiler.source>
 		<maven.compiler.target>12</maven.compiler.target>
 		<!-- Note the artifact version should be in sync on release -->
-		<log4j.version>2.25.3</log4j.version>
 		<slf4j.version>2.0.17</slf4j.version>
+		<log4j.version>2.25.3</log4j.version>
 		<!-- Same value for all Log Connectors -->
 		<connector-type>baxter-log-connector</connector-type>
 	</properties>
@@ -46,7 +46,7 @@
 
 			<dependency>
 				<groupId>org.apache.logging.log4j</groupId>
-				<artifactId>log4j-slf4j-impl</artifactId>
+				<artifactId>log4j-slf4j2-impl</artifactId>
 				<version>${log4j.version}</version>
 			</dependency>
 
@@ -75,7 +75,7 @@
 
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-slf4j-impl</artifactId>
+			<artifactId>log4j-slf4j2-impl</artifactId>
 		</dependency>
 
 		<dependency>
